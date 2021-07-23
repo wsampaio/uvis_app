@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2021, /WELLSampaio <github.com/wsampaio>
+Todos os direitos reservados.
+
+Redistribuicao e uso em formatos de origem e binarios, com ou sem
+modificacoes, são permitidas desde que as seguintes condicoes sejam atendidas:
+
+* As redistribuições do codigo-fonte devem manter o aviso de copyright acima, 
+esta lista de condicoes e a seguinte isencao de responsabilidade.
+* As redistribuições em formato binario devem reproduzir o aviso de copyright 
+acima, esta lista de condicoes e a seguinte isencaoo de responsabilidade na 
+documentacao e / ou outros materiais fornecidos com a distribuicao.
+
+ESTE SOFTWARE E FORNECIDO PELOS PROPRIETARIOS DOS DIREITOS AUTORAIS E 
+CONTRIBUIDORES "NO ESTADO EM QUE SE ENCONTRA" E QUAISQUER GARANTIAS EXPRESSAS 
+OU IMPLICITAS, INCLUINDO, MAS NAO SE LIMITANDO A, GARANTIAS IMPLICITAS DE 
+COMERCIALIZACAO E ADEQUACAO A UM DETERMINADO FIM SAO REJEITADAS. EM NENHUMA 
+HIPOTESE O TITULAR DOS DIREITOS AUTORAIS OU CONTRIBUIDORES SERA RESPONSAVEL POR 
+QUAISQUER DANOS DIRETOS, INDIRETOS, INCIDENTAIS, ESPECIAIS, EXEMPLARES OU 
+CONSEQUENCIAIS (INCLUINDO, MAS NAO SE LIMITANDO A, AQUISICAO DE BENS OU 
+SERVICOS SUBSTITUTOS; PERDA DE USO, DADOS OU SERVICOS; OU INTERRUPCAO DE 
+NEGOCIOS) NO ENTANTO CAUSADA E EM QUALQUER TEORIA DE RESPONSABILIDADE, SEJA EM 
+CONTRATO, RESPONSABILIDADE ESTRITA OU DELITO (INCLUINDO NEGLIGENCIA OU OUTRO) 
+DECORRENTE DE QUALQUER FORMA DO USO DESTE SOFTWARE, MESMO SE AVISADO DA 
+POSSIBILIDADE DE TAIS DANOS.
+-->
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+		<meta name = "viewport" 
+			content = "width=device-width,initial-scale=1,shrink-to-fit=no">
+		<link rel="stylesheet" href="/html/plugins/picnic.min.css">
+
+		<style>
+			* {
+				font-family: Courier New, monospace;
+			}
+
+
+
+			#loadBlock {
+				display: none;
+
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+
+				text-align:center; /* Align center inline elements */
+				font: 0/0 a;
+
+				color: #fff;
+				background-color: rgb(0, 0, 0, 0.5);
+				z-index: 999999;
+				user-select: none;
+			}
+
+			#loadBlock:before {
+				content: ' ';
+				display: inline-block;
+				vertical-align: middle;
+				height: 100%;
+			}
+
+			#loadBlock img {
+				content:url("/html/images/loading.gif");
+				vertical-align: middle;
+				display: inline-block;
+				width: 250px;
+			}
+
+
+
+			.container > .HEAD {
+				position: fixed;
+				top: 0;
+				left: 0;
+				background-color: rgba(0, 0, 0, 0.5);
+				width: 100%;
+				height: 50px;
+				z-index: 9999;
+			}
+
+			.container > .FOOT {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				background-color: rgba(0, 0, 0, 0.5);
+				width: 100%;
+				height: 50px;
+				z-index: 9999;
+			}
+
+			.container > .BODY {
+				padding-top: 50px;
+				padding-bottom: 100px;
+			}
+
+
+
+
+
+			.icon-container {
+				display: inline-block;
+			}
+
+			.icon {
+				content:url("/html/images/caret-square-white.png");
+				height: 15px;
+				float:left;
+			}
+
+			.icon.open {
+				transform: rotate(90deg);
+			}
+
+			.icon.close {
+				content:url("");
+				transform: rotate(-90deg);
+			}
+
+			.colHide {display:none;}
+
+
+			.cabecalho-fixo th{
+				position: sticky;
+				top: 50px;
+				z-index: 99;
+			}
+
+
+		</style>
+
+	</head>
+	<body>
+		<div id='loadBlock'><img></div>
+		<div class='container'>
+			<div class='HEAD'></div>
+			<div class='BODY'></div>
+			<div class='FOOT'></div>
+		</div>
+
+		<script src="/html/plugins/jquery.min.js"></script>
+		<script>
+			$(function(){
+				//
+
+
+				const urlParams = new URLSearchParams(window.location.search);
+
+				let params = {
+					"schema": urlParams.get('schema'),
+					"table": urlParams.get('table'),
+					"qry": urlParams.get('qry'),
+					"params": urlParams.get('params')
+				};
+
+				geraTabela(params, ".container .BODY");
+
+			});
+
+			// variaveis
+
+
+
+
+
+
+			// metodos
+
+			// funcao para classificar as colunas
+			function nameFieldsSorted(objRow){
+				var fieldsIndex = [];
+				//var objRow = objJSON[urlParams["table"]][0];
+
+				for(var key in objRow) {
+					if(objRow.hasOwnProperty(key)) {
+						fieldsIndex.push(key);
+					}
+				}
+
+				return fieldsIndex.sort(function(a, b) {
+						return objRow[a].fieldIndex - objRow[b].fieldIndex;
+					});
+			}
+			// FIM: nameFieldsSorted
+
+			let addSelectBoxFields = function(targetStr, arrFields, tableName){
+
+				target = $(targetStr);
+				// acrescenta selectBox dos campos
+				target.append(
+					"<div class='menu'><select id='" + tableName + "Fields'>" +
+						"<option value='-1'>Campos de " + tableName + "</option>" +
+					"</select></div>"
+				);
+
+				let i = 0;
+				for(field of arrFields){
+					target.find("select").append(
+						"<option value='" + i++ + "'>" + field + "</option>"
+					);
+				}
+
+				$("#" + tableName + "Fields").on("change", function(){
+					$(".col" + $(this).val()).toggleClass("colHide");
+				});
+			};
+
+			let geraTabela = function(urlParams, objContainer){
+
+				let objJSON = {};
+				let schema = urlParams["schema"];
+				let table = urlParams["table"];
+				let qry = urlParams["qry"];
+				let params = urlParams["params"];
+
+				let url = "/html/modelos/json.jsp" +
+					"?schema=" + schema + 
+					"&table=" + table + 
+					"&qry=" + qry;
+
+				if(urlParams["params"] != null){
+					url+="&params=" + params;
+				}
+
+
+				$("#loadBlock").css("display", "block");
+
+				$.getJSON( url, function( data ) {
+					objJSON = data;
+				})
+					.done( function() {
+
+						let container = $(objContainer + "");
+						container.html("");
+
+						$(document).prop("title", "LISTA " + schema + "." + table);
+
+						let columnCounter = 0;
+
+						container.append(
+							"<table id='" + table + "'>" +
+							"<thead class='cabecalho-fixo'></thead>" +
+							"<tbody></tbody>" +
+							"<tfoot></tfoot>" +
+							"</table>"
+						);
+
+						// monta o cabecalho
+						$("#" + table + " thead").append("<tr></tr>");
+						for(field of nameFieldsSorted(objJSON[table][0])){
+							$("#" + table + " thead tr").last().append(
+								"<th class='col col" + (columnCounter) + "'>" +
+									"<button class='toggle-col' id='" + (columnCounter) + "' " +
+											"title='hide column'>" +
+										"<img class='icon close'>" +
+										"<span class='colName'>" + field + "<span>" +
+									"</button>" +
+								"</th>"
+							);
+
+							//columnCounter +=2;
+							columnCounter++;
+
+							if (objJSON[table][0][field].fKey != null){
+								for(
+									field of nameFieldsSorted(
+										objJSON[table][0][field].fKey.obj
+									)
+								) {
+									$("#" + table + " thead tr").last().append(
+										"<th class='col col" + (columnCounter) + "'>" +
+											"<button class='toggle-col' id='" + (columnCounter) + "' " + 
+													"title='hide column'>" +
+												"<img class='icon close'>" + field +
+											"</button>" +
+										"</th>"
+									);
+
+									//columnCounter +=2;
+									columnCounter++;
+								}
+							}
+						}
+
+/*
+						// monta cabeçalhos escondidos ao final
+						columnCounter = 1;
+
+						for(field of nameFieldsSorted(objJSON[table][0])){
+							$("#" + table + " thead tr").last().append(
+								"<th class='col col" + (columnCounter) + " colHide'>" +
+									"<button class='toggle-col' id='" + (columnCounter) + "' " +
+											"title='" + field + "'>" +
+										"<img class='icon open'>" +
+									"</button>" +
+								"</th>"
+							);
+
+							columnCounter +=2;
+
+							if (objJSON[table][0][field].fKey != null){
+								for(
+									field of nameFieldsSorted(
+										objJSON[table][0][field].fKey.obj
+									)
+								){
+									$("#" + table + " thead tr").last().append(
+										"<th class='col col" + (columnCounter) + " colHide'>" +
+											"<button class='toggle-col' id='" + (columnCounter) + "' " +
+													"title='" + field + "'>" +
+												"<img class='icon open'>" +
+											"</button>" +
+										"</th>"
+									);
+
+									columnCounter +=2;
+								}
+							}
+						}
+*/
+
+
+						// preenche tabela
+						for(obj of objJSON[table]){
+
+							columnCounter = 0;
+
+							$("#" + table + " tbody").append("<tr></tr>");
+
+							for(field of nameFieldsSorted(obj)){
+
+								if (obj[field].fieldValue == undefined)
+									obj[field].fieldValue = "";
+
+								if(obj[field].pkField == true){
+									$("#" + table + " tbody tr").last().append(
+										"<td class='col" + (columnCounter) + "'>" +
+											"<a class='link-registro' " +
+												"href='" +
+													"?schema=" + schema + 
+													"&table=" + table + 
+													"&qry=" + "select" + 
+													"&params=" + obj[field].fieldValue + "," +
+												"'"+
+											">" +
+												obj[field].fieldValue +
+											"</a>" +
+										"</td>"
+									);
+
+									columnCounter++;
+
+								} else {
+									$("#" + table + " tbody tr").last().append(
+										"<td class='col" + (columnCounter) + "'>" + 
+											obj[field].fieldValue.replace("\n", "<br>") + 
+										"</td>"
+									);
+
+									columnCounter++;
+
+									if (obj[field].fKey !== null){
+										for(fieldFK of nameFieldsSorted(obj[field].fKey.obj)){
+											$("#" + table + " tbody tr").last().append(
+												"<td class='col" + (columnCounter) + "'>" +
+													obj[field].fKey.obj[fieldFK]
+														.fieldValue.replace("\n", "<br>") + 
+												"</td>"
+											);
+
+											columnCounter++;
+										}
+									}
+								}
+							}
+
+						}
+
+
+
+
+
+
+
+
+
+
+
+
+						// define eventLiteners das colunas
+
+						$(".toggle-col").on("click", function(){
+							if (!$(this).parent().hasClass("col"))
+								return;
+
+							if ( $(this).attr("id")%2 == 0 ){
+								$(".col" + $(this).attr("id")).toggleClass("colHide");
+								$(".col-0" + (Number($(this).attr("id")) + 1) )
+									.toggleClass("colHide");
+							} else {
+								$(".col" + $(this).attr("id")).toggleClass("colHide");
+								$(".col-0" + (Number($(this).attr("id")) - 1) )
+									.toggleClass("colHide");
+							}
+						});
+
+
+
+
+
+
+
+
+
+
+						// adiciona campo de pesquisa
+						$(".container > .HEAD").append(
+							"<nav class='demo'>" +
+							"<div class='menu'>" +
+							"<input placeholder='Pesquisar' id='pesquisar'' />" +
+							"</div>" +
+							"</nav>"
+						);
+
+						$(".container > .HEAD .demo")
+							.css("background-color", "rgba(0,0,0,0.5)")
+
+						$(".container > .HEAD #pesquisar").on("keyup", function(){
+							filter = $(this).val().toLowerCase();
+							tr =  $(objContainer + " #" + table + " tr");
+
+							for (i = 0; i < tr.length; i++) {
+								if ($(tr[i]).find("th").length > 0)
+									continue;
+
+								if (tr[i]) {
+									txtValue = tr[i].textContent || tr[i].innerText;
+										if (txtValue.toLowerCase().indexOf(filter) > -1) {
+											tr[i].style.display = "";
+										} else {
+											tr[i].style.display = "none";
+										}
+								}       
+							}
+						});
+
+
+
+
+						addSelectBoxFields(
+							".container > .HEAD .demo", 
+							nameFieldsSorted(objJSON[table][0]),
+							table
+						);
+
+
+
+
+
+
+
+
+
+
+
+
+
+					})
+					.fail(function(xhr, ajaxOptions, thrownError) {
+						console.log( "error: " + thrownError );
+						alert( "error" );
+					})
+					.always(function() {
+						//alert( "finished" );
+
+						$(".link-registro").on("click", function(){
+							event.preventDefault();
+							window.open("./form.html" + $(this).attr("href"));
+						});
+
+						$("#loadBlock").css("display", "none");
+					});
+			};
+
+		</script>
+	</body>
+</html>

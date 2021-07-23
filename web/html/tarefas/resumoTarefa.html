@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2021, /WELLSampaio <github.com/wsampaio>
+Todos os direitos reservados.
+
+Redistribuicao e uso em formatos de origem e binarios, com ou sem
+modificacoes, são permitidas desde que as seguintes condicoes sejam atendidas:
+
+* As redistribuições do codigo-fonte devem manter o aviso de copyright acima, 
+esta lista de condicoes e a seguinte isencao de responsabilidade.
+* As redistribuições em formato binario devem reproduzir o aviso de copyright 
+acima, esta lista de condicoes e a seguinte isencaoo de responsabilidade na 
+documentacao e / ou outros materiais fornecidos com a distribuicao.
+
+ESTE SOFTWARE E FORNECIDO PELOS PROPRIETARIOS DOS DIREITOS AUTORAIS E 
+CONTRIBUIDORES "NO ESTADO EM QUE SE ENCONTRA" E QUAISQUER GARANTIAS EXPRESSAS 
+OU IMPLICITAS, INCLUINDO, MAS NAO SE LIMITANDO A, GARANTIAS IMPLICITAS DE 
+COMERCIALIZACAO E ADEQUACAO A UM DETERMINADO FIM SAO REJEITADAS. EM NENHUMA 
+HIPOTESE O TITULAR DOS DIREITOS AUTORAIS OU CONTRIBUIDORES SERA RESPONSAVEL POR 
+QUAISQUER DANOS DIRETOS, INDIRETOS, INCIDENTAIS, ESPECIAIS, EXEMPLARES OU 
+CONSEQUENCIAIS (INCLUINDO, MAS NAO SE LIMITANDO A, AQUISICAO DE BENS OU 
+SERVICOS SUBSTITUTOS; PERDA DE USO, DADOS OU SERVICOS; OU INTERRUPCAO DE 
+NEGOCIOS) NO ENTANTO CAUSADA E EM QUALQUER TEORIA DE RESPONSABILIDADE, SEJA EM 
+CONTRATO, RESPONSABILIDADE ESTRITA OU DELITO (INCLUINDO NEGLIGENCIA OU OUTRO) 
+DECORRENTE DE QUALQUER FORMA DO USO DESTE SOFTWARE, MESMO SE AVISADO DA 
+POSSIBILIDADE DE TAIS DANOS.
+-->
+<html>
+	<head>
+		<title>Title of the document</title>
+		<meta charset="UTF-8">
+		<meta name = "viewport" 
+			content = "width=device-width,initial-scale=1,shrink-to-fit=no">
+		<link rel="stylesheet" href="/html/plugins/picnic.min.css">
+		<link href="/html/plugins/select2/css/select2.min.css" rel="stylesheet" />
+
+		<script src="/html/plugins/jquery.min.js"></script>
+
+		<style>
+			/**/
+			.shyButton, .verMaisBtn {
+				padding: 0px 5px;
+			}
+
+			.perguntaBtn {
+				background-color: #4CAF50;
+			}
+
+
+
+
+
+
+
+			#loadBlock {
+				display: none;
+
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+
+				text-align:center; /* Align center inline elements */
+				font: 0/0 a;
+
+				color: #fff;
+				background-color: rgb(0, 0, 0, 0.5);
+				z-index: 9999;
+				user-select: none;
+			}
+
+			#loadBlock:before {
+				content: ' ';
+				display: inline-block;
+				vertical-align: middle;
+				height: 100%;
+			}
+
+			#loadBlock img {
+				content:url("/html/images/loading.gif");
+				vertical-align: middle;
+				display: inline-block;
+				width: 250px;
+			}
+
+
+
+
+
+		</style>
+	</head>
+	<body>
+		<div id='loadBlock'><img></div>
+		<div class='container'>
+			<div class='HEAD'></div>
+			<div class='BODY'>
+				<h1 class="pageTitle">titulo da pagina</h1>
+				<br>
+				<button id="destacarJanela" class="shyButton">destacar</button>
+				<button id="openAll" class="shyButton">abrir todos</button>
+				<button id="closeAll" class="shyButton">fechar todos</button>
+				<hr>
+				<div id='arvorePassos'></div>
+			</div>
+			<div class='FOOTER'></div>
+		</div>
+
+
+
+
+		<script>
+
+			$(function(){
+
+				const urlParams = new URLSearchParams(window.location.search);
+
+				params = {
+					"schema": urlParams.get('schema'),
+					"table": urlParams.get('table'),
+					"qry": urlParams.get('qry'),
+					"params": urlParams.get('params')
+				};
+
+				loadJSON(params, "arvorePassos");
+				
+				$(".container .BODY").css("padding", "10px");
+			});
+
+
+			// variaveis globais
+
+			let arvore = {};
+			let params;
+
+
+
+			// metodos
+
+
+
+			// funcao para classificar as perguntas
+			function perguntasSorted(objRow){
+				return objRow.sort(function(a, b) {
+					return a.ordem.fieldValue - b.ordem.fieldValue;
+				});
+			}
+			// FIM: perguntasSorted
+
+
+			let loadJSON = function(urlParams, objContainer){
+
+				let tableName = urlParams["table"];
+
+				let url = "/html/tarefas/resumoTarefaJSON.jsp" +
+					"?schema=" + urlParams["schema"] + 
+					"&table=" + urlParams["table"] + 
+					"&qry=" + urlParams["qry"];
+
+				if(urlParams["params"] != null){
+					url+="&params=" + urlParams["params"];
+				}
+
+				$("#loadBlock").css("display", "block");
+
+				$.get( url, function(data) {
+					arvore = data;
+				})
+					.done(function() {
+						desenhaArvore("arvorePassos", arvore);
+					})
+					.fail(function() {
+						alert( "error" );
+					})
+					.always(function() {
+						//alert( "finished" );
+						$("#loadBlock").css("display", "none");
+					});
+			};
+
+			let desenhaArvore = function(IdDivAlvo, objJSON){
+				let objAlvo = $("#" + IdDivAlvo);
+
+				//console.log(objJSON.tarefas[0])
+
+				// prepara o container
+				objAlvo
+					.addClass("treeContainer")
+					.addClass("container")
+					.css("border", "solid 1px #777");
+
+				// preenche cabecalhos
+				$(".pageTitle").html(objJSON.tarefas[0].tarefa.fieldValue);
+
+				$(document).prop(
+					"title", objJSON.tarefas[0].tarefa.fieldValue + " - RESUMO"
+				);
+
+				// adiciona o primeiro passo
+				appendPassoDiv(objAlvo, objJSON.tarefas[0].primeiro_passo, 0);
+
+				// depois de inserir todos passos e perguntas
+				$(".link").each(function( index ) {
+					$(this)
+						.css("position", "relative")
+						.css("border", "solid 1px #777")
+						.css("border-right", "transparent 0px")
+						.css("border-bottom", "transparent 0px");
+
+						if ($(this).hasClass("passo")){
+							$(this)
+								.css("background-color", "#E0BBE4")
+								.attr("data-url", "./seguePasso.html?params=" + this.id + ",");
+						}
+
+						if ($(this).hasClass("pergunta")){
+							$(this)
+								.css("background-color", "#FFDFD3")
+								.attr("data-url", "./pergunta.jsp?cod=" + this.id);
+						}
+				});
+
+				$(".div-container")
+					.css("padding-left", "20px")
+					//.addClass("display-off");
+					//.removeClass( "myClass noClass" )
+					//.hasClass( "foo" )
+					//.css("display", "none")
+
+				$(".pergunta > .div-container")
+					.css("display", "none");
+
+				$(".verMaisBtn")
+					.css("margin-left", "5px")
+					.css("margin-right", "5px");
+
+				$(".verMaisBtn.passoBtn")
+					.on("click", function(){
+						window.open($(this).parent().attr("data-url"));
+					});
+
+				$(".verMaisBtn.perguntaBtn")
+					.css("user-select", "none")
+					.on("click", function(){
+						//$(".div-container").hide();
+
+						$(this).siblings(".div-container")
+							//.toggleClass("display-off")
+							.toggle();
+
+						// se a div container estiver escondida
+						if ($(this).siblings(".div-container").is(":hidden")){
+							// esconde os irmãos
+							
+							// abre o div-container atual
+							
+							//desenha pais coloridos e esconde filhos
+
+							//$(this).closest(".div-container").find(".div-container")
+							//.hide()
+
+
+							$(this)
+								//.closest(".passo").css("background-color", "#E0BBE4")
+								.find(".pergunta").css("background-color", "#FFDFD3");
+
+						} else {
+							
+							// esconde o div-container atual, se ele tiver aberto
+							
+							
+							
+							//desenha filhos coloridos e acinzenta pais
+							$(".link")
+								.css("background-color", "rgba(127, 127, 127, 0.2)");
+							$(this).siblings(".div-container")
+								.find(".passo").css("background-color", "#E0BBE4")
+								.find(".pergunta").css("background-color", "#FFDFD3")
+								.find(".div-container0").css("display", "none");
+
+
+						}
+
+					})
+					.on("dblclick", function(){
+						//window.open($(this).parent().attr("data-url"));
+					});
+
+			};
+
+
+			let appendPassoDiv = function(objAlvo, obj, level, pulaPergunta){
+				//cod_passo,titulo,cod_pergunta,perguntas
+
+				// insere o passo no alvo
+				objAlvo.append(
+					"<div class='link passo' id='" + obj.cod_passo.fieldValue + "' " +
+						"data-level='" + level + "'" +
+					">" + 
+						"<button class='verMaisBtn passoBtn'>&rArr;</button>" + 
+						obj.titulo.fieldValue + 
+						"<div class='div-container'></div>" +
+					"</div>"
+				);
+
+				// se nao houverem perguntas termina a funcao
+				if (obj.perguntas === undefined) return;
+
+				// define o alvo das perguntas
+				objAlvo = objAlvo.find("[id=" + obj.cod_passo.fieldValue + "].passo .div-container");
+
+				// chama cada pergunta para inserir
+				// verifica se nao e para pular alguma delas
+				for(q of perguntasSorted(obj.perguntas)){
+					if (!pulaPergunta)
+						appendPerguntaDiv(objAlvo, q, level + 1);
+				}
+			};
+
+			let appendPerguntaDiv = function(objAlvo, obj, level){
+				//cod_passo, cod_pergunta_passo, cod_proximo_passo, 
+				//ordem, pula_pergunta, relac_tarefa, texto
+
+				obj.pula_pergunta.fieldValue = obj.pula_pergunta.fieldValue === "true";
+				obj.relac_tarefa.fieldValue = obj.relac_tarefa.fieldValue === "true";
+
+				// se nao for para pular a pergunta
+				// ou pergunta relacionada a outra tarefa
+				// insere normal, muda o nível e altera o próximo alvo
+				if ( !( (obj.pula_pergunta.fieldValue) || (obj.relac_tarefa.fieldValue) ) ){
+					objAlvo.append(
+						"<div class='link pergunta' id='" + 
+								obj.cod_pergunta_passo.fieldValue + "' " + 
+							"data-level='" + level + "'" +
+						">" + 
+							"<button class='verMaisBtn perguntaBtn'>&dArr;</button>" + 
+							obj.texto.fieldValue + 
+							"<div class='div-container'></div>" +
+						"</div>"
+					);
+
+					level++;
+					objAlvo = objAlvo.find("[id=" + obj.cod_pergunta_passo.fieldValue + "].pergunta .div-container");
+				}
+
+
+				// se for para pular a pergunta
+				// força o nível atual mas altera o próximo alvo
+				if (obj.pula_pergunta.fieldValue){
+					//console.log(objAlvo.closest(".passo").attr("id"));
+					objAlvo = objAlvo.closest(".passo").parent();
+					level--;
+				}
+
+
+				// se a pergunta NAO for relacionada a tarefa
+				// verifica se ha um proximo passo e chama a funcao
+				if (!obj.relac_tarefa.fieldValue)
+					if (obj.proximo_passo !== undefined)
+						appendPassoDiv(objAlvo, obj.proximo_passo, level, false);
+
+
+				// TODO - NAO SEI O QUE ISSO TA FAZENDO AQUI
+				// se for uma pergunta relacionada a outra tarefa
+				/*
+				if ( obj.relac_tarefa.fieldValue ){
+					objAlvo.append(
+						"<div class='link passo' id='" + 
+								obj.cod_proximo_passo.fieldValue + "' " + 
+							"data-level='" + level + "'" +
+						">" + 
+							"<button class='verMaisBtn passoBtn'>&rArr;</button>" + 
+							obj.texto.fieldValue + 
+							"<div class='div-container'></div>" +
+						"</div>"
+					);
+
+					level++;
+					objAlvo = objAlvo.find("[id=" + obj.cod_pergunta_passo.fieldValue + "].pergunta .div-container");
+				}
+*/
+
+
+
+
+
+			};
+
+
+
+
+
+
+			$("#destacarJanela").on("click", function(){
+				window.open(
+					// URL
+					window.location, 
+					// name
+					$(document).attr("title"),
+					// specs
+					"menubar=no," +
+					"width=450," +
+					"height=550," +
+					"location=no," +
+					"toolbar=no",
+					// replace
+					false
+				);
+				self.close();
+			});
+
+			$("#openAll").on("click", function(){
+				$(".pergunta > .div-container").css("display", "block");
+				//$(".treeContainer .div-container").toggleClass("display-off");
+			});
+
+			$("#closeAll").on("click", function(){
+				$(".pergunta > .div-container").css("display", "none");
+			});
+
+		</script>
+
+	</body>
+
+</html>
+

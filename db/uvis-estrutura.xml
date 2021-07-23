@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- SQL XML created by WWW SQL Designer, https://github.com/ondras/wwwsqldesigner/ -->
+<!-- Active URL: https://box/DER/ -->
+<sql>
+<datatypes db="mysql">
+	<group label="Numeric" color="rgb(238,238,170)">
+		<type label="Integer" length="0" sql="INTEGER" quote=""/>
+	 	<type label="TINYINT" length="0" sql="TINYINT" quote=""/>
+	 	<type label="SMALLINT" length="0" sql="SMALLINT" quote=""/>
+	 	<type label="MEDIUMINT" length="0" sql="MEDIUMINT" quote=""/>
+	 	<type label="INT" length="0" sql="INT" quote=""/>
+		<type label="BIGINT" length="0" sql="BIGINT" quote=""/>
+		<type label="Decimal" length="1" sql="DECIMAL" re="DEC" quote=""/>
+		<type label="Single precision" length="0" sql="FLOAT" quote=""/>
+		<type label="Double precision" length="0" sql="DOUBLE" re="DOUBLE" quote=""/>
+	</group>
+
+	<group label="Character" color="rgb(255,200,200)">
+		<type label="Char" length="1" sql="CHAR" quote="'"/>
+		<type label="Varchar" length="1" sql="VARCHAR" quote="'"/>
+		<type label="Text" length="0" sql="MEDIUMTEXT" re="TEXT" quote="'"/>
+		<type label="Binary" length="1" sql="BINARY" quote="'"/>
+		<type label="Varbinary" length="1" sql="VARBINARY" quote="'"/>
+		<type label="BLOB" length="0" sql="BLOB" re="BLOB" quote="'"/>
+	</group>
+
+	<group label="Date &amp; Time" color="rgb(200,255,200)">
+		<type label="Date" length="0" sql="DATE" quote="'"/>
+		<type label="Time" length="0" sql="TIME" quote="'"/>
+		<type label="Datetime" length="0" sql="DATETIME" quote="'"/>
+		<type label="Year" length="0" sql="YEAR" quote=""/>
+		<type label="Timestamp" length="0" sql="TIMESTAMP" quote="'"/>
+	</group>
+	
+	<group label="Miscellaneous" color="rgb(200,200,255)">
+		<type label="ENUM" length="1" sql="ENUM" quote=""/>
+		<type label="SET" length="1" sql="SET" quote=""/>
+		<type label="Bit" length="0" sql="bit" quote=""/>
+	</group>
+</datatypes><table x="308" y="626" name="tipos_passos">
+<row name="cod_tipo_passo" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<key type="PRIMARY" name="">
+<part>cod_tipo_passo</part>
+</key>
+</table>
+<table x="64" y="318" name="tipos_objetos">
+<row name="cod_tipo_objeto" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<key type="PRIMARY" name="">
+<part>cod_tipo_objeto</part>
+</key>
+</table>
+<table x="49" y="439" name="tarefas">
+<row name="cod_tarefa" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<key type="PRIMARY" name="">
+<part>cod_tarefa</part>
+</key>
+</table>
+<table x="418" y="570" name="tabela_uvis">
+<row name="cod_uvis" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<key type="PRIMARY" name="">
+<part>cod_uvis</part>
+</key>
+</table>
+<table x="264" y="388" name="suporte_informatica">
+<row name="cod_relac" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<row name="cod_objeto" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="objetos" row="cod_objeto" />
+</row>
+<key type="PRIMARY" name="">
+<part>cod_relac</part>
+</key>
+</table>
+<table x="387" y="29" name="setores">
+<row name="cod_setor" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<key type="PRIMARY" name="">
+<part>cod_setor</part>
+</key>
+</table>
+<table x="40" y="607" name="perguntas">
+<row name="cod_pergunta_passo" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<row name="cod_passo" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="passos" row="cod_passo" />
+<relation table="passos" row="cod_passo" />
+</row>
+<row name="cod_proximo_passo" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="passos" row="cod_passo" />
+</row>
+<key type="PRIMARY" name="">
+<part>cod_pergunta_passo</part>
+</key>
+</table>
+<table x="67" y="527" name="passos">
+<row name="cod_passo" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<row name="cod_tarefa" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="tarefas" row="cod_tarefa" />
+</row>
+<key type="PRIMARY" name="">
+<part>cod_passo</part>
+</key>
+</table>
+<table x="66" y="26" name="ordem_servicos">
+<row name="cod_os" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<row name="cod_objeto" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="objetos" row="cod_objeto" />
+</row>
+<row name="cod_setor_suporte" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="setores" row="cod_setor" />
+</row>
+<key type="PRIMARY" name="">
+<part>cod_os</part>
+</key>
+</table>
+<table x="65" y="152" name="objetos">
+<row name="cod_objeto" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<row name="cod_tipo_objeto" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="tipos_objetos" row="cod_tipo_objeto" />
+</row>
+<row name="cod_modelo" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="modelos" row="cod_modelo" />
+</row>
+<row name="cod_setor_suporte" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="setores" row="cod_setor" />
+</row>
+<key type="PRIMARY" name="">
+<part>cod_objeto</part>
+</key>
+</table>
+<table x="389" y="221" name="modelos">
+<row name="cod_modelo" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<row name="cod_marca" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="marcas" row="cod_marca" />
+</row>
+<key type="PRIMARY" name="">
+<part>cod_modelo</part>
+</key>
+</table>
+<table x="467" y="330" name="marcas">
+<row name="cod_marca" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<key type="PRIMARY" name="">
+<part>cod_marca</part>
+</key>
+</table>
+<table x="370" y="106" name="usuarios">
+<row name="cod_usuario" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<row name="arr_setor" null="0" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>0</default><relation table="setores" row="cod_setor" />
+</row>
+<key type="PRIMARY" name="">
+<part>cod_usuario</part>
+</key>
+</table>
+<table x="305" y="569" name="cnaes">
+<row name="cod_cnae" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+</row>
+<key type="PRIMARY" name="">
+<part>cod_cnae</part>
+</key>
+</table>
+</sql>

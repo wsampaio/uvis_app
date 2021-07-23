@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="24">
+        <file>
+            <url>web/html/resumoTarefa.html</url>
+            <bookmark id="1">
+                <name/>
+                <line>236</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>web/html/tarefas/resumoTarefa.html</url>
+            <bookmark id="11">
+                <name/>
+                <line>243</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>web/html/tarefas/passo.jsp</url>
+            <bookmark id="5">
+                <name/>
+                <line>605</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>web/html/modelos/save.jsp</url>
+            <bookmark id="8">
+                <name/>
+                <line>75</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>web/html/index.html</url>
+            <bookmark id="15">
+                <name/>
+                <line>107</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>web/html/modelos/list.html</url>
+            <bookmark id="19">
+                <name/>
+                <line>129</line>
+                <key/>
+            </bookmark>
+            <bookmark id="24">
+                <name/>
+                <line>206</line>
+                <key/>
+            </bookmark>
+            <bookmark id="20">
+                <name/>
+                <line>250</line>
+                <key/>
+            </bookmark>
+            <bookmark id="23">
+                <name/>
+                <line>400</line>
+                <key/>
+            </bookmark>
+            <bookmark id="18">
+                <name/>
+                <line>429</line>
+                <key/>
+            </bookmark>
+            <bookmark id="21">
+                <name/>
+                <line>453</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/java/com/wsampaio/jdbc/ObjTable.java</url>
+            <bookmark id="13">
+                <name/>
+                <line>308</line>
+                <key/>
+            </bookmark>
+            <bookmark id="12">
+                <name/>
+                <line>436</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>web/html/modelos/form.html</url>
+            <bookmark id="3">
+                <name/>
+                <line>229</line>
+                <key/>
+            </bookmark>
+            <bookmark id="2">
+                <name/>
+                <line>281</line>
+                <key/>
+            </bookmark>
+            <bookmark id="4">
+                <name/>
+                <line>433</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/F:/NetBeansProjects/uvis_app/.gitignore</file>
+        </group>
+    </open-files>
+</project-private>

@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2021, /WELLSampaio <github.com/wsampaio>
+Todos os direitos reservados.
+
+Redistribuicao e uso em formatos de origem e binarios, com ou sem
+modificacoes, são permitidas desde que as seguintes condicoes sejam atendidas:
+
+* As redistribuições do codigo-fonte devem manter o aviso de copyright acima, 
+esta lista de condicoes e a seguinte isencao de responsabilidade.
+* As redistribuições em formato binario devem reproduzir o aviso de copyright 
+acima, esta lista de condicoes e a seguinte isencaoo de responsabilidade na 
+documentacao e / ou outros materiais fornecidos com a distribuicao.
+
+ESTE SOFTWARE E FORNECIDO PELOS PROPRIETARIOS DOS DIREITOS AUTORAIS E 
+CONTRIBUIDORES "NO ESTADO EM QUE SE ENCONTRA" E QUAISQUER GARANTIAS EXPRESSAS 
+OU IMPLICITAS, INCLUINDO, MAS NAO SE LIMITANDO A, GARANTIAS IMPLICITAS DE 
+COMERCIALIZACAO E ADEQUACAO A UM DETERMINADO FIM SAO REJEITADAS. EM NENHUMA 
+HIPOTESE O TITULAR DOS DIREITOS AUTORAIS OU CONTRIBUIDORES SERA RESPONSAVEL POR 
+QUAISQUER DANOS DIRETOS, INDIRETOS, INCIDENTAIS, ESPECIAIS, EXEMPLARES OU 
+CONSEQUENCIAIS (INCLUINDO, MAS NAO SE LIMITANDO A, AQUISICAO DE BENS OU 
+SERVICOS SUBSTITUTOS; PERDA DE USO, DADOS OU SERVICOS; OU INTERRUPCAO DE 
+NEGOCIOS) NO ENTANTO CAUSADA E EM QUALQUER TEORIA DE RESPONSABILIDADE, SEJA EM 
+CONTRATO, RESPONSABILIDADE ESTRITA OU DELITO (INCLUINDO NEGLIGENCIA OU OUTRO) 
+DECORRENTE DE QUALQUER FORMA DO USO DESTE SOFTWARE, MESMO SE AVISADO DA 
+POSSIBILIDADE DE TAIS DANOS.
+-->
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+		<meta name = "viewport" 
+			content = "width=device-width,initial-scale=1,shrink-to-fit=no">
+		<link rel="stylesheet" href="/html/plugins/picnic.min.css">
+		<link href="/html/plugins/select2/css/select2.min.css" rel="stylesheet" />
+
+		<script src="/html/plugins/jquery.min.js"></script>
+		<script src="/html/plugins/select2/js/select2.min.js"></script>
+
+		<style>
+			* {
+				/*font-family: Courier New, monospace;*/
+			}
+
+			#loadBlock {
+				display: none;
+
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+
+				text-align:center; /* Align center inline elements */
+				font: 0/0 a;
+
+				color: #fff;
+				background-color: rgb(0, 0, 0, 0.5);
+				z-index: 9999;
+				user-select: none;
+			}
+
+			#loadBlock:before {
+				content: ' ';
+				display: inline-block;
+				vertical-align: middle;
+				height: 100%;
+			}
+
+			#loadBlock img {
+				content:url("/html/images/loading.gif");
+				vertical-align: middle;
+				display: inline-block;
+				width: 250px;
+			}
+
+			.container > .HEAD {
+				position: fixed;
+				top: 0;
+				left: 0;
+				background-color: rgba(0, 0, 0, 0.5);
+				width: 100%;
+				height: 49px;
+			}
+
+			.container > .FOOT {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				background-color: rgba(0, 0, 0, 0.5);
+				width: 100%;
+				height: 49px;
+			}
+
+			.container > .BODY {
+				padding-top: 50px;
+				padding-bottom: 50px;
+			}
+
+			th {
+				background-color: rgba(0, 0, 0, 0);
+				color: #000;
+			}
+
+			.tooltip-right {
+				user-select: none;
+			}
+
+			.form .FOOT * {
+				margin: 2px;
+			}
+
+
+
+
+
+			input[type=checkbox]{
+				opacity: 1;
+				width: 1em;
+				height: 1em;
+				position: initial;
+			}
+
+
+
+
+			.container > .BODY {
+				/*padding: 15px;*/
+			}
+
+		</style>
+
+	</head>
+	<body>
+		<div id='loadBlock'><img></div>
+		<div class='container'>
+			<div class='HEAD'></div>
+			<div class='BODY'>
+				<article class="card">
+					<header>
+						<h1>CNAE</h1><br>
+						<h2>DESCRICAO</h2>
+					</header>
+					<footer>
+
+						<table width="100%">
+
+							<tr style="display: block;">
+								<th class="field-name" width="150">cnae:</th>
+								<td>
+									<div class="input-container" id="cnae">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+
+							<tr style="display: block;">
+								<th class="field-name" width="150">descricao:</th>
+								<td>
+									<div class="input-container" id="descricao">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+
+							<tr style="display: block;">
+								<th class="field-name" width="150">cod_cnae:</th>
+								<td>
+									<div class="input-container" id="cod_cnae">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+
+							<tr>
+								<th class="field-name" width="150">Condicao de cadastro:</th>
+								<td>
+									<div class="input-container" id="condicao_cadastro">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+
+							<tr>
+								<th class="field-name" width="150">Área:</th>
+								<td>
+									<div class="input-container" id="area">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+
+							<tr>
+								<th class="field-name" width="150">Sujeito a inspecao prévia:</th>
+								<td>
+									<div class="input-container" id="inspecao_previa">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+
+							<tr>
+								<th class="field-name" width="150">Sujeito a renovação:</th>
+								<td>
+									<div class="input-container" id="renovacao">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+
+							<tr>
+								<th class="field-name" width="150">Prazo para renovação:</th>
+								<td>
+									<div class="input-container" id="prazo_renovacao">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+
+							<tr>
+								<th class="field-name" width="150">Observações:</th>
+								<td>
+									<div class="input-container" id="observacoes">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+						</table>
+
+						<hr>
+
+						<h3>Formulários</h3>
+
+						<table width="100%">
+
+							<tr>
+								<th class="field-name" width="200">
+									<span  data-tooltip="INFORMAÇÕES EM VIGILÂNCIA SANITÁRIA" 
+											class="tooltip-right">
+										Anexo XI:
+									</span>
+								</th>
+								<td>
+									<div class="input-container" id="an_xi">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="field-name">
+									<span  data-tooltip="para PRESTAÇÃO DE SERVIÇO DE SAÚDE" 
+											class="tooltip-right">
+										Anexo XI-a:
+									</span>
+								</th>
+								<td>
+									<div class="input-container" id="an_xi_a">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="field-name">
+									<span  data-tooltip="para EQUIPAMENTOS DE SAÚDE" 
+											class="tooltip-right">
+										Anexo XI-b:
+									</span>
+								</th>
+								<td>
+									<div class="input-container" id="an_xi_b">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="field-name">
+									<span  data-tooltip="para ATIVIDADE RELACIONADA A PRODUTOS DE INTERESSE DA SAÚDE" 
+											class="tooltip-right">
+										Anexo XI-c:
+									</span>
+								</th>
+								<td>
+									<div class="input-container" id="an_xi_c">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="field-name">
+									<span  data-tooltip="para IDENTIFICAÇÃO DE VEÍCULOS" 
+											class="tooltip-right">
+										Anexo XI-d:
+									</span>
+								</th>
+								<td>
+									<div class="input-container" id="an_xi_d">
+										<div class="lbl"></div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th class="field-name">
+									<span  data-tooltip="para ATIVIDADE DE ABASTECIMENTO DE ÁGUA" 
+											class="tooltip-right">
+										Anexo XI-e:
+									</span>
+								</th>
+								<td>
+									<div class="input-container" id="an_xi_e">
+										<div class="lbl"></div>	
+									</div>
+								</td>
+							</tr>
+						</table>
+
+						<hr>
+
+						<h3>Documentação</h3>
+
+						<div class="tabs two">
+							<input id='tab-1' type='radio' name='tabgroupB'>
+							<label class=" button toggle" for="tab-1">
+								Pessoa Física
+							</label>
+							<input id='tab-2' type='radio' name='tabgroupB'>
+							<label class=" button toggle" for="tab-2">
+								Pessoa Jurídica
+							</label>
+							<div class="row">
+								<div>
+									• Documento de identidade com foto, CPF 
+									(se não constar no documento de identidade).<br><br>
+									• Cópia simples do comprovante de endereço atualizado 
+									(últimos 3 meses) e correspondente ao endereço da prestação 
+									do serviço, caso o comprovante não estiver no nome do 
+									solicitante apresentar um documento ou declaração que vincule 
+									ao endereço citado.<br><br>
+									O comprovante de endereço pode ser: comprovantes de água, 
+									luz, telefone (fixo e móvel), demonstrativos ou comunicados 
+									IR, INSS, SRF, IPTU, IPVA, bancário, condomínio, 
+									financiamentos, licenciamento de veículos, fatura de cartão.
+								</div>
+
+								<div>
+									<table border="1" style="font-size: 9px;">
+										<tbody>
+											<tr>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													contrato social
+												</td>
+												<td>
+													estatuto social
+												</td>
+												<td>
+													ata de eleição da última diretoria
+												</td>
+												<td>
+													ato constitutivo
+												</td>
+												<td>
+													declaração de empresário
+												</td>
+												<td>
+													Certificado da Condição de Microempreendedor Individual
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Registrado na JUCESP
+												</td>
+												<td>
+													Sociedades empresárias constituídas na forma de sociedade em nome coletivo, sociedade comandita simples e sociedade limitada
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													O
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Registrado no Registro Civil das Pessoas Jurídicas
+												</td>
+												<td>
+													Sociedades simples constituídas na forma de sociedade em nome coletivo, sociedade em comandita simples, sociedade limitada e sociedade cooperativa
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													O
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Registrado na JUCESP
+												</td>
+												<td>
+													Sociedades empresárias constituídas na forma de sociedade anônima ou em comandita por ações
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Registrado no Registro Civil das Pessoas Jurídicas
+												</td>
+												<td>
+													Associações
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Registrado no Registro Civil das Pessoas Jurídicas
+												</td>
+												<td>
+													Fundações
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Registrado na JUCESP
+												</td>
+												<td>
+													Empresa Individual de Responsabilidade Limitada (Eireli)
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td>
+													Registrado na JUCESP
+												</td>
+												<td>
+													Empresa Individual
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													X
+												</td>
+												<td>
+													&nbsp;
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													MEI
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													&nbsp;
+												</td>
+												<td>
+													X
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<hr>
+
+						<h3>Documentação de RT</h3>
+							<table width="100%">
+								<tr>
+									<th class="field-name" width="150">Regra de Responsabilidade Técnica:</th>
+									<td>
+										<div class="button input-container" id="regra_rt">
+											<span data-tooltip="Clique para ver os detalhes" 
+												 class="lbl tooltip-right">
+											</span>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td colspan="2">
+										<div class="input-container" id="descricaoRegra">
+											<div class="lbl">Descricao da regra</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+
+						<hr>
+
+						<div class='form'>
+							<div class='HEAD'></div>
+							<div class='BODY'></div>
+							<div class='FOOT'></div>
+						</div>
+
+					</footer>
+				</article>
+			</div>
+			<div class='FOOT'></div>
+		</div>
+
+		<script>
+			$(function(){
+
+				const urlParams = new URLSearchParams(window.location.search);
+
+				$(".links > .divBODY").css("display", "none");
+
+				params = {
+					"schema": urlParams.get('schema'),
+					"table": urlParams.get('table'),
+					"qry": urlParams.get('qry'),
+					"params": urlParams.get('params')
+				};
+
+				loadForm(params, ".form");
+
+			});
+
+			// variaveis globais
+
+			let params;
+			let fKeys = [];
+
+
+
+			// metodos
+
+
+			// funcao para classificar as colunas
+			function nameFieldsSorted(objRow){
+				var fieldsIndex = [];
+				//var objRow = objJSON[urlParams["table"]][0];
+
+				for(var key in objRow) {
+					if(objRow.hasOwnProperty(key)) {
+						fieldsIndex.push(key);
+					}
+				}
+
+				return fieldsIndex.sort(function(a, b) {
+					return objRow[a].fieldIndex - objRow[b].fieldIndex;
+				});
+			}
+			// FIM: nameFieldsSorted
+
+			$.fn.serializeObject = function(){
+				var o = {};
+				var a = this.serializeArray();
+				$.each(a, function() {
+					if (o[this.name]) {
+						if (!o[this.name].push) {
+							o[this.name] = [o[this.name]];
+						}
+						o[this.name].push(this.value || '');
+					} else {
+						o[this.name] = this.value || '';
+					}
+				});
+				return o;
+			};
+
+			let loadForm = function(urlParams, objContainer){
+
+				let objJSON = {};
+
+				let tableName = urlParams["table"];
+
+				let url = "/html/modelos/json.jsp" +
+					"?schema=" + urlParams["schema"] + 
+					"&table=" + urlParams["table"] + 
+					"&qry=" + urlParams["qry"];
+
+				if(urlParams["params"] != null){
+					url+="&params=" + urlParams["params"];
+				}
+
+				$("#loadBlock").css("display", "block");
+
+				$.getJSON( url, function( data ) {
+					objJSON = data;
+				})
+					.done( function() {
+
+						let container = $(objContainer + " .BODY");
+						container.html("");
+
+						obj = objJSON[tableName][0];
+						drawFields(obj, tableName + "Frm");
+
+
+//BOTOES
+
+// links de documentacao
+
+$(objContainer + " > .FOOT")
+	.append("<a class='button' href='/html/tarefas/seguePasso.html?params=25,' target='_blank'>Docs para Cadastro</a>")
+	.append("<a class='button' href='/html/tarefas/seguePasso.html?params=20,' target='_blank'>Docs para Alteração</a>")
+	//.append("<a class='button editar' href='/html/tarefas/seguePasso.html?params=20,' target='_blank'>editar</a>")
+	.append("<button class='editar'>editar</button>");
+
+// botao editar
+$(".editar").on("click", function(){
+	event.preventDefault();
+	let url = "/html/modelos/form.html" +
+		"?schema=uvis" +
+		"&table=cnaes" +
+		"&qry=select" +
+		"&params=" + $("#cod_cnae .lbl").html() + ",";
+
+	window.open(url);
+	window.close();
+});
+
+
+
+
+
+
+// define cabecalho e titulo da pagina
+$(".card > header > h1").html("CNAE: " + $("#cnae").find(".lbl").html());
+$(".card > header > h2").html($("#descricao").find(".lbl").html());
+$(document).prop("title",
+	$("#cnae").find(".lbl").html() + " - " +
+	$("#descricao").find(".lbl").html()
+);
+
+
+// esconde ou deleta campos
+$("#cod_cnae").closest("tr").css("display", "none");
+
+$("#cnae").closest("tr").remove();
+$("#descricao").closest("tr").remove();
+$("#link").closest("tr").remove();
+$("#SITUAÇÃO1").closest("tr").remove();
+
+// verifica se é renovação
+if (!$("#renovacao").find("input").is(":checked"))
+	$("#prazo_renovacao").closest("tr").remove();
+
+// formata cada checkbox
+$(".input-container > .lbl > input[type='checkbox']").each(function(){
+
+	$(this)
+		.removeAttr("disabled")
+		.on("click", function(){
+			return false;
+		});
+
+	if ($(this).closest(".input-container").prop("id") == "inspecao_previa")
+		return;
+
+	if ($(this).closest(".input-container").prop("id") == "renovacao")
+		return;
+
+	if (!$(this).is(":checked")){
+		$(this).closest("tr").remove();
+		return;
+	}
+});
+
+// esconde campo de documentação PF/PJ
+$(".tabs.two > .row").css("display", "none");
+
+// define clique PF/PJ
+$(".tabs.two > input[type='radio']").on("click", function(){
+	$(".tabs.two > .row").show("fast");
+});
+
+// esconde campo de detalhes RT
+$("#descricaoRegra").closest("tr").css("display", "none");
+
+// define clique RT
+$(".lbl.tooltip-right").on("click", function(){
+	$("#descricaoRegra").closest("tr").show("fast");
+});
+
+
+//define texto do campo descricaoRegra
+$("#descricaoRegra .lbl").html(
+//$("#regra_rt .lbl").html()
+""
+);
+
+
+
+let regra_rt = $("#regra_rt .lbl").html()
+	.replace("\n", "")
+	.replace("\t\t\t\t\t\t\t\t\t\t\t", "");
+
+switch(regra_rt){
+	case "REGRA DE ME OU EPP":
+		$("#descricaoRegra .lbl").html(
+			"As empresas que se enquadrem como ME, EPP ou OPTANTE PELO SIMPLES " +
+			"não necessitarão de responsável técnico"
+		);
+		break;
+	case "SIM":
+		$("#descricaoRegra .lbl").html(
+			"- Comprovante de vínculo empregatício " +
+			"(Carteira de Trabalho ou contrato de trabalho/prestação de serviços)" +
+			"<br><br>" +
+			"- Documento de habilitação profissional " +
+			"(Carteira do conselho regional ou cédula de identidade profissional)"
+		);
+		break;
+	case "SIM C/ CERTIFICADO DE REGULARIDADE - ALIMENTOS REGRA DE ME OU EPP":
+		$("#descricaoRegra .lbl").html(
+			"- Comprovante"
+		);
+		break;
+	case "SIM C/ CERTIFICADO DE REGULARIDADE":
+		$("#descricaoRegra .lbl").html(
+			"- Comprovante de vínculo empregatício " +
+			"(Carteira de Trabalho ou contrato de trabalho/prestação de serviços)" +
+			"<br><br>" +
+			"- Documento de habilitação profissional " +
+			"(Carteira do conselho regional ou cédula de identidade profissional)" +
+			"<br><br>" +
+			"- Certificado de regularidade técnica: cópia simples."
+		);
+		break;
+	default:
+		break;
+}
+
+//.
+
+
+
+
+
+
+					})
+					.fail(function() {
+						alert( "error" );
+					})
+					.always(function() {
+						//alert( "finished" );
+
+						$(".link-registro").on("click", function(){
+							event.preventDefault();
+							window.open("./form.html" + $(this).attr("href"));
+						});
+
+						$("#loadBlock").css("display", "none");
+
+
+
+
+						// botao fechar
+						//$(objContainer + " .FOOT")
+						$(".container > .FOOT")
+							.append("<button class='fechar'>fechar</button>");
+
+						$(".fechar").on("click", function(){
+							event.preventDefault();
+							window.close();
+						});
+
+						// carrega combos
+						loadCombos(fKeys);
+					});
+
+			};
+
+			let drawFields = function(obj, formContainerStr){
+
+				let formContainer = $("#" + formContainerStr + " table");
+				formContainer.html("");
+
+				for(field of nameFieldsSorted(obj)){
+
+					formContainer.append(
+						"<tr>" +
+							"<th class='field-name' width='150'>" + 
+								obj[field].fieldName + ":</th>" +
+							"<td>" + 
+								"<div class='input-container' id='" + obj[field].fieldName + "'>" +
+									"<div class='field-type'>" + 
+										obj[field].fieldType + 
+									"</div>" +
+									"<div class='lbl'>" +
+										//"<img class='icon-edit'>" + 
+									"</div>" +
+									"<div class='input'></div>" +
+								"</div>" +
+							"</td>" +
+						"</tr>"
+					);
+
+					switch(obj[field].fieldType){
+						case "VARCHAR":
+						case "TEXT":
+							if (obj[field].fieldName === undefined)
+								obj[field].fieldValue = "";
+							$("#" + obj[field].fieldName + ".input-container .lbl")
+								.append(obj[field].fieldValue);
+
+							$("" + obj[field].fieldName + ".input-container .input")
+								.append(
+									"<input type='text' " + 
+										"name='" + obj[field].fieldName + "' " + 
+										"value='" + obj[field].fieldValue + "'>"
+								);
+							break;
+
+
+						case "INTEGER":
+						case "LONG":
+							if (obj[field].fieldValue === undefined)
+								obj[field].fieldValue = 0;
+							$("#" + obj[field].fieldName + ".input-container .lbl")
+								.append(obj[field].fieldValue);
+
+							$("" + obj[field].fieldName + ".input-container .input")
+								.append(
+									"<input type='number' " + 
+										"name='" + obj[field].fieldName + "' " + 
+										"value='" + obj[field].fieldValue + "'>"
+								);
+							break;
+
+
+
+						case "BIGTEXT":
+						case "MEMO":
+							if (obj[field].fieldValue === undefined)
+								obj[field].fieldValue = "";
+							$("#" + obj[field].fieldName + ".input-container .lbl")
+								.append(
+									"<br>" + obj[field].fieldValue.replace("\n", "<br>")
+								);
+
+							$("" + obj[field].fieldName + ".input-container .input")
+								.append(
+									"<textarea name='" + obj[field].fieldName + "'>" + 
+										obj[field].fieldValue + 
+									"</textarea>"
+								);
+							break;
+
+
+
+						case "BOOLEAN":
+							if (obj[field].fieldValue === undefined)
+								obj[field].fieldValue = false;
+							$("#" + obj[field].fieldName + ".input-container .lbl")
+								.append(
+									"<input type='checkbox' disabled" + 
+									( (obj[field].fieldValue === "true")?" checked":"" ) + 
+									">"
+								);
+
+							$("" + obj[field].fieldName + ".input-container .input")
+								.append(
+
+									"<label>" +
+										"<input type='checkbox' " +
+											"name='" + obj[field].fieldName + "' value='true'" + 
+											( (obj[field].fieldValue === "true")?" checked":"" ) + 
+										">" +
+									"</label>"
+								);
+							break;
+
+						case "TIMESTAMP":
+						case "LOCALDATETIME":
+							if (obj[field].fieldName === undefined)
+								obj[field].fieldValue = "";
+							$("#" + obj[field].fieldName + ".input-container .lbl")
+								.append(obj[field].fieldValue);
+
+							$("" + obj[field].fieldName + ".input-container .input")
+								.append(
+									"<input type='datetime-local' " + 
+										"name='" + obj[field].fieldName + "' " + 
+										"value='" + obj[field].fieldValue + "'>"
+								);
+							break;
+
+
+
+
+
+
+
+						case "link":
+							if (obj[field].fieldValue === undefined)
+								obj[field].fieldValue = "";
+							if (obj[field].fieldValue.length > 0){
+								$("#" + obj[field].fieldName + ".input-container .lbl")
+									.append(
+										"<a href='" + obj[field].fieldValue + "' target='_blank'>abrir</a>"
+									);
+							} else {
+								$("#" + obj[field].fieldName + ".input-container .lbl")
+									.append("em branco");
+							}
+
+							$("" + obj[field].fieldName + ".input-container .input")
+								.append(
+									"<input type='text' " + 
+										"name='" + obj[field].fieldName + "' " + 
+										"value='" + obj[field].fieldValue + "'>"
+								);
+							break;
+
+
+
+
+
+						default:
+							if (obj[field].fieldValue === undefined)
+								obj[field].fieldValue = "";
+							$("#" + obj[field].fieldName + ".input-container .lbl")
+								.html("")
+								.append(
+									"<strong>tipo não listado</strong>: " + 
+									obj[field].fieldType + " - " +
+									obj[field].fieldValue
+								);
+
+							$("" + obj[field].fieldName + ".input-container .input")
+								.append(
+									"<input type='text' " + 
+										"name='" + obj[field].fieldName + "' " + 
+										"value='" + obj[field].fieldValue + "'>"
+								);
+							break;
+
+					}
+
+					if (obj[field].fKey !== null){
+						let fk = obj[field].fKey;
+						fk.fkField = obj[field].fieldName;
+						fk.fkValue = obj[field].fieldValue;
+						fKeys.push(fk);
+					}
+						//console.log(obj[field].fKey);
+					
+				}
+
+				// esconde campos
+				$(".input").css("display", "none");
+				$(".field-type").css("display", "none");
+
+				// botao de edicao
+				$(".icon-edit")
+					.attr("src", "/html/images/edit_icon.png")
+					.css("width", "15px")
+					.css("margin-right", "15px")
+					.on("click", function(){
+						$(this).closest(".input-container")
+							.find(".lbl")
+							.css("display", "none");
+						$(this).closest(".input-container")
+							.find(".input")
+							.css("display", "block")
+							.focus();
+					});
+
+			};
+
+			let loadCombos = function(fKeys, counter=0){
+				if (fKeys.length > 0){
+					let paramsCombo = {
+						"schema": params["schema"],
+						"table": fKeys[counter].pkTable,
+						"qry": "getIndexList",
+						"selected":fKeys[counter].fkValue
+					};
+
+					let urlCombo = "/html/modelos/jsonCombo.jsp" +
+												 "?schema=" + params["schema"] +
+												 "&table=" + fKeys[counter].pkTable +
+												 "&qry=getIndexList";
+
+					if(paramsCombo["params"] !== null)
+						if(paramsCombo["params"] !== undefined)
+							url+="&params=" + paramsCombo["params"];
+
+					let objJSON = {};
+
+
+					let table = paramsCombo["table"];
+
+					$("#loadBlock").css("display", "block");
+
+					$.getJSON( urlCombo, function( data ) {
+						objJSON = data;
+					})
+						.done( function() {
+
+							let container = $("#" + fKeys[counter].fkField);
+							container.html("");
+
+							container.append(
+								"<select class='js-example-basic-single' name='" +
+										container.attr("id") + "'>" +
+									"<option value='0'>Selecione:</option>" +
+								"</select>"
+							);
+
+							let pkField = "";
+
+							for(obj of objJSON[table]){
+
+								container.find("select").append(
+									"<option value='" + obj.value + "'>" +
+										obj.option +
+									"</option>"
+								);
+							}
+
+							//container.find("select").select2();
+							container.find("select").val(paramsCombo["selected"]).change();
+
+						})
+						.fail(function() {
+							alert( "error" );
+						})
+						.always(function() {
+							//alert( "finished" );
+
+							$(".link-registro").on("click", function(){
+								event.preventDefault();
+								window.open("./form.html" + $(this).attr("href"));
+							});
+
+							$("#loadBlock").css("display", "none");
+
+							if (++counter < fKeys.length){
+								loadCombos(fKeys, counter);
+							}
+
+							$(".js-example-basic-single").select2()
+
+						});
+
+				}
+			};
+
+
+
+
+
+			$(".links > .divHEAD")
+				.css("user-select", "none")
+				.on("click", function(){
+					$(".links > .divBODY").toggle();
+				});
+
+			$(".links > .divBODY").css("background-color", "#f9eac3");
+
+
+		</script>
+	</body>
+</html>
